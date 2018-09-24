@@ -35,7 +35,11 @@ func main() {
 		//シグナルを受信するまで実行
 		for scanner.Scan() {
 			if s := scanner.Text(); utf8.RuneCountInString(s) > 0 {
-				write(s)
+				err := write(s)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
 			}
 			select {
 			case <-quit:
@@ -49,7 +53,7 @@ func main() {
 //キーボードに書き込む
 func write(str string) error {
 	l := "echo -n \"" + str + "\" | sudo " + *binDir + "/scan /dev/hidg0 1 2"
-	err := exec.Command(l).Run()
+	err := exec.Command("sh", "-c", l).Run()
 	//_, err := fmt.Println(l)
 	return err
 }
