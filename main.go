@@ -61,7 +61,7 @@ func main() {
 
 //キーボードに書き込む（開放も行われる）
 func writekey(key scancode.Key) error {
-	_, err := fmt.Fprintf(devf, "\\%X\\0\\%X\\0\\0\\0\\0\\0", key.Top, key.ID)
+	_, err := fmt.Fprintf(/*devf*/os.Stdout, "\\%X\\0\\%X\\0\\0\\0\\0\\0", key.Top, key.ID)
 	if err != nil {
 		return err
 	}
