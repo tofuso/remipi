@@ -66,7 +66,8 @@ func writekey(key scancode.Key) error {
 		return err
 	}
 	//開放
-	_, err = fmt.Fprintf(devf, "\\%X\\0\\%X\\0\\0\\0\\0\\0", scancode.Open.Top, scancode.Open.ID)
+	_, err = fmt.Fprintf(/*devf*/os.Stdout, "\\%X\\0\\%X\\0\\0\\0\\0\\0", scancode.Open.Top, scancode.Open.ID)
+
 	return err
 }
 
