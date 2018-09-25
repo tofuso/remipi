@@ -56,14 +56,14 @@ func main() {
 //キーボードに書き込む（開放も行われる）
 func writekey(key scancode.Key) error {
 	_, err := fmt.Fprintf(devf, "\\x%X\\0\\x%x\\0\\0\\0\\0\\0", key.Top, key.ID)
-	fmt.Println("\\x%X\\0\\x%x\\0\\0\\0\\0\\0", key.Top, key.ID)
+	fmt.Printf("\\x%X\\0\\x%x\\0\\0\\0\\0\\0\n", key.Top, key.ID)
 
 	if err != nil {
 		return err
 	}
 	//開放
 	_, err = fmt.Fprintf(devf, "\\x%X\\0\\x%x\\0\\0\\0\\0\\0", scancode.Open.Top, scancode.Open.ID)
-	fmt.Println("\\x%X\\0\\x%x\\0\\0\\0\\0\\0", scancode.Open.Top, scancode.Open.ID)
+	fmt.Printf("\\x%X\\0\\x%x\\0\\0\\0\\0\\0\n", scancode.Open.Top, scancode.Open.ID)
 	return err
 }
 
