@@ -54,16 +54,16 @@ func main() {
 
 //キーボードに書き込む（開放も行われる）
 func writekey(key scancode.Key) error {
-	l := fmt.Sprintf("sudo echo -ne \\x%X\\0\\x%X\\0\\0\\0\\0\\0 > %s", key.Top, key.ID, *dir)
+	l := fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", key.Top, key.ID, *dir)
 	_, err := exec.Command("sh", "-c", l).Output()
-
+	fmt.Println(l)
 	if err != nil {
 		return err
 	}
 	//開放
-	l = fmt.Sprintf("sudo echo -ne \\x%X\\0\\x%X\\0\\0\\0\\0\\0 > %s", scancode.Open.Top, scancode.Open.ID, *dir)
+	l = fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", scancode.Open.Top, scancode.Open.ID, *dir)
 	_, err = exec.Command("sh", "-c", l).Output()
-
+	fmt.Println(l)
 	return err
 }
 
