@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"os/signal"
 	"unicode/utf8"
 
 	"github.com/tofuso/remipi/scancode"
@@ -30,7 +29,7 @@ func main() {
 	if !*talk {
 		//一回だけ実行
 		fmt.Println("入力された文字: ", *textMessage)
-		err := run(*textMessage)
+		_, err := run(*textMessage)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -39,21 +38,16 @@ func main() {
 	} else {
 		//対話モード
 		scanner := bufio.NewScanner(os.Stdin)
-		quit := make(chan os.Signal)      //終了シグナルを作成
-		signal.Notify(quit, os.Interrupt) //シグナルを設定
-		//シグナルを受信するまで実行
 		for scanner.Scan() {
 			if s := scanner.Text(); utf8.RuneCountInString(s) > 0 {
-				err := run(s)
+				f, err := run(s)
 				if err != nil {
 					fmt.Println(err)
 					return
+				} else if f {
+					//終了フラグが立った時
+					return
 				}
-			}
-			select {
-			case <-quit:
-				return
-			default:
 			}
 		}
 	}
@@ -61,18 +55,18 @@ func main() {
 
 //キーボードに書き込む（開放も行われる）
 func writekey(key scancode.Key) error {
-	_, err := fmt.Fprintf(/*devf*/os.Stdout, "\\%X\\0\\%X\\0\\0\\0\\0\\0", key.Top, key.ID)
+	_, err := fmt.Fprintf(os.Stdout, "\\0x%X\\0\\0x%x\\0\\0\\0\\0\\0", key.Top, key.ID)
 	if err != nil {
 		return err
 	}
 	//開放
-	_, err = fmt.Fprintf(/*devf*/os.Stdout, "\\%X\\0\\%X\\0\\0\\0\\0\\0", scancode.Open.Top, scancode.Open.ID)
+	_, err = fmt.Fprintf(os.Stdout, "\\0x%X\\0\\0x%x\\0\\0\\0\\0\\0", scancode.Open.Top, scancode.Open.ID)
 
 	return err
 }
 
 //解析し、キーに打ち込む処理を行う
-func run(s string) error {
+func run(s string) (bool, error) {
 	actf := false   //コマンド中か判定するフラグ
 	var acts string //コマンドの内容を保存する
 	for _, r := range s {
@@ -82,11 +76,14 @@ func run(s string) error {
 			acts = ""   //初期化
 		} else if r == '|' && actf {
 			//コマンド終了
-			if actkey, ok := scancode.ActionMap[acts]; ok {
+			if acts == "quit" {
+				//終了する
+				return true, nil
+			} else if actkey, ok := scancode.ActionMap[acts]; ok {
 				//コマンドあり
 				err := writekey(actkey)
 				if err != nil {
-					return err
+					return false, err
 				}
 			} else {
 				//該当コマンドなし
@@ -99,19 +96,19 @@ func run(s string) error {
 			//通常のKeyであるなら
 			err := writekey(key)
 			if err != nil {
-				return err
+				return false, err
 			}
 		} else if skey, ok := scancode.JapaneaseKeyMap[r]; ok {
 			//ひらがなのKeyであるなら日本語入力モードにする
 			err := writekey(scancode.ChgIn)
 			if err != nil {
-				return err
+				return false, err
 			}
 			//入力
 			for _, k := range skey {
 				err = writekey(k)
 				if err != nil {
-					return err
+					return false, err
 				}
 			}
 		} else {
@@ -119,5 +116,5 @@ func run(s string) error {
 			fmt.Println("該当する文字がありません: ", r)
 		}
 	}
-	return nil
+	return false, nil
 }
