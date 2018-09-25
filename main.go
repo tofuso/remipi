@@ -78,6 +78,7 @@ func run(s string) (bool, error) {
 			acts = ""   //初期化
 		} else if r == '|' && actf {
 			//コマンド終了
+			actf = false //フラグを折る
 			if acts == "quit" {
 				//終了する
 				return true, nil
@@ -113,6 +114,12 @@ func run(s string) (bool, error) {
 					return false, err
 				}
 			}
+			//戻す
+			err = writekey(scancode.ChgIn)
+			if err != nil {
+				return false, err
+			}
+
 		} else {
 			//該当する文字がない時
 			fmt.Println("該当する文字がありません: ", r)
