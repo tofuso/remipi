@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"unicode/utf8"
 
 	"github.com/tofuso/remipi/scancode"
@@ -14,13 +15,11 @@ var (
 	textMessage = flag.String("s", "Hello World!", "キーボードに出力させる文字を指定してください。")
 	dir         = flag.String("d", "/dev/hidg0", "デバイスファイル")
 	talk        = flag.Bool("t", false, "指定すると対話モードで起動します。Ctr+Cで終了。")
-	devf        *os.File
 )
 
 func main() {
 	var err error
-	flag.Parse()                                     //引数をパース
-	devf, err = os.OpenFile(*dir, os.O_WRONLY, 0666) //デバイスをオープン
+	flag.Parse() //引数をパース
 	if err != nil {
 		//デバイスを開く過程でエラーが発生
 		fmt.Println(err)
@@ -55,15 +54,16 @@ func main() {
 
 //キーボードに書き込む（開放も行われる）
 func writekey(key scancode.Key) error {
-	_, err := fmt.Fprintf(devf, "\\x%X\\0\\x%x\\0\\0\\0\\0\\0", key.Top, key.ID)
-	fmt.Printf("\\x%X\\0\\x%x\\0\\0\\0\\0\\0\n", key.Top, key.ID)
+	l := fmt.Sprintf("sudo echo -ne \\x%X\\0\\x%X\\0\\0\\0\\0\\0 > %s", key.Top, key.ID, *dir)
+	_, err := exec.Command("sh", "-c", l).Output()
 
 	if err != nil {
 		return err
 	}
 	//開放
-	_, err = fmt.Fprintf(devf, "\\x%X\\0\\x%x\\0\\0\\0\\0\\0", scancode.Open.Top, scancode.Open.ID)
-	fmt.Printf("\\x%X\\0\\x%x\\0\\0\\0\\0\\0\n", scancode.Open.Top, scancode.Open.ID)
+	l = fmt.Sprintf("sudo echo -ne \\x%X\\0\\x%X\\0\\0\\0\\0\\0 > %s", scancode.Open.Top, scancode.Open.ID, *dir)
+	_, err = exec.Command("sh", "-c", l).Output()
+
 	return err
 }
 
