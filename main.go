@@ -19,8 +19,8 @@ var (
 
 func main() {
 	var err error
-	flag.Parse()                                                          //引数をパース
-	devf, err = os.OpenFile(*dir, os.O_WRONLY|os.O_APPEND, os.ModeAppend) //デバイスをオープン
+	flag.Parse()                                     //引数をパース
+	devf, err = os.OpenFile(*dir, os.O_WRONLY, 0666) //デバイスをオープン
 	if err != nil {
 		//デバイスを開く過程でエラーが発生
 		fmt.Println(err)
