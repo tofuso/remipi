@@ -76,7 +76,7 @@ var KeyMap = map[rune]Key{
 	//その他の文字
 	' ':    {0x0, 0x2C},
 	'!':    {0x2, 0x1E},
-	0x0022: {0x2, 0x1F}, //"を指定
+	0x0022: {0x2, 0x1F}, //`を指定
 	'#':    {0x2, 0x20},
 	'$':    {0x2, 0x21},
 	'%':    {0x2, 0x22},
@@ -84,9 +84,9 @@ var KeyMap = map[rune]Key{
 	0x0027: {0x2, 0x24}, //'を指定
 	'(':    {0x2, 0x25},
 	')':    {0x2, 0x26},
-	'-':    {0x0, 0x27},
+	'-':    {0x0, 0x2D},
 	'^':    {0x0, 0x2E},
-	0x005C: {0x0, 0x89}, //\を指定
+	0x005C: {0x0, 0x31}, //\を指定
 	'@':    {0x0, 0x2F},
 	'[':    {0x0, 0x30},
 	']':    {0x0, 0x32},
@@ -98,7 +98,7 @@ var KeyMap = map[rune]Key{
 	//shiftキーを押したその他の文字
 	'=':    {0x2, 0x2D},
 	'~':    {0x2, 0x2E},
-	'|':    {0x2, 0x89},
+	'|':    {0x2, 0x31},
 	0x0060: {0x2, 0x2F}, //`を指定
 	'{':    {0x2, 0x30},
 	'}':    {0x2, 0x32},
@@ -107,7 +107,6 @@ var KeyMap = map[rune]Key{
 	'<':    {0x2, 0x36},
 	'>':    {0x2, 0x37},
 	'?':    {0x2, 0x38},
-	'_':    {0x2, 0x87},
 }
 
 // JapaneaseKeyMap ひらがなを打ち込むマップ
@@ -158,6 +157,7 @@ var JapaneaseKeyMap = map[rune][]Key{
 	'わ': {KeyMap['w'], KeyMap['a']},
 	'を': {KeyMap['w'], KeyMap['o']},
 	'ん': {KeyMap['n'], KeyMap['n']},
+	//濁音
 	'が': {KeyMap['g'], KeyMap['a']},
 	'ぎ': {KeyMap['g'], KeyMap['i']},
 	'ぐ': {KeyMap['g'], KeyMap['u']},
@@ -178,14 +178,56 @@ var JapaneaseKeyMap = map[rune][]Key{
 	'ぶ': {KeyMap['b'], KeyMap['u']},
 	'べ': {KeyMap['b'], KeyMap['e']},
 	'ぼ': {KeyMap['b'], KeyMap['o']},
+	//半濁音
+	'ぱ': {KeyMap['p'], KeyMap['a']},
+	'ぴ': {KeyMap['p'], KeyMap['i']},
+	'ぷ': {KeyMap['p'], KeyMap['u']},
+	'ぺ': {KeyMap['p'], KeyMap['e']},
+	'ぽ': {KeyMap['p'], KeyMap['o']},
+	//小文字
 	'ぁ': {KeyMap['l'], KeyMap['a']},
 	'ぃ': {KeyMap['l'], KeyMap['i']},
 	'ぅ': {KeyMap['l'], KeyMap['u']},
 	'ぇ': {KeyMap['l'], KeyMap['e']},
 	'ぉ': {KeyMap['l'], KeyMap['o']},
 	'ゃ': {KeyMap['l'], KeyMap['y'], KeyMap['a']},
-	'ゅ': {KeyMap['l'], KeyMap['y'], KeyMap['i']},
-	'ょ': {KeyMap['l'], KeyMap['y'], KeyMap['u']},
+	'ゅ': {KeyMap['l'], KeyMap['y'], KeyMap['u']},
+	'ょ': {KeyMap['l'], KeyMap['y'], KeyMap['o']},
+	'っ': {KeyMap['l'], KeyMap['t'], KeyMap['u']},
+	//特殊
+	'　': {{0x0, 0x2C}},
+	'！': {{0x2, 0x1E}},
+	'”': {{0x2, 0x1F}},
+	'＃': {{0x2, 0x20}},
+	'＄': {{0x2, 0x21}},
+	'％': {{0x2, 0x22}},
+	'＆': {{0x2, 0x23}},
+	'’': {{0x2, 0x24}},
+	'（': {{0x2, 0x25}},
+	'）': {{0x2, 0x26}},
+	'ー': {{0x0, 0x2D}},
+	'＾': {{0x0, 0x2E}},
+	'￥': {{0x0, 0x31}},
+	'＠': {{0x0, 0x2F}},
+	'「': {{0x0, 0x30}},
+	'」': {{0x0, 0x32}},
+	'；': {{0x0, 0x33}},
+	'：': {{0x0, 0x34}},
+	'、': {{0x0, 0x36}},
+	'。': {{0x0, 0x37}},
+	'・': {{0x0, 0x38}},
+	//shiftキーを押したその他の文字
+	'＝': {{0x2, 0x2D}},
+	'～': {{0x2, 0x2E}},
+	'｜': {{0x2, 0x31}},
+	'｀': {{0x2, 0x2F}},
+	'｛': {{0x2, 0x30}},
+	'｝': {{0x2, 0x32}},
+	'＋': {{0x2, 0x33}},
+	'＊': {{0x2, 0x34}},
+	'＜': {{0x2, 0x36}},
+	'＞': {{0x2, 0x37}},
+	'？': {{0x2, 0x38}},
 }
 
 // ActionMap 十字キー移動など特殊な操作をキーマップにしたもの。|でくくる。（例：|down|）
@@ -216,8 +258,6 @@ var ActionMap = map[string]Key{
 	"win":         {0x8, 0x0},
 	//同時押し
 	"win-r": {0x8, 0x15},
-	//特殊
-	"": KeyMap['|'], // コマンド名を指定しない=||と表記される時、|と表記することにする
 }
 
 var (
