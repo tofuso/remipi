@@ -19,24 +19,7 @@ var (
 )
 
 func main() {
-	var err error
 	flag.Parse() //引数をパース
-	if err != nil {
-		//デバイスを開く過程でエラーが発生
-		fmt.Println(err)
-		return
-	}
-	//一回だけ実行
-	fmt.Println("入力された文字: ", *textMessage)
-	f, err := process(*textMessage)
-	if err != nil {
-		fmt.Println(err)
-		return
-	} else if f {
-		//終了フラグが立った時
-		return
-	}
-
 	if *talk {
 		//対話モード
 		scanner := bufio.NewScanner(os.Stdin)
@@ -51,6 +34,17 @@ func main() {
 					return
 				}
 			}
+		}
+	} else {
+		//一回だけ実行
+		fmt.Println("入力された文字: ", *textMessage)
+		f, err := process(*textMessage)
+		if err != nil {
+			fmt.Println(err)
+			return
+		} else if f {
+			//終了フラグが立った時
+			return
 		}
 	}
 }
