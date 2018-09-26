@@ -2,8 +2,8 @@ package scancode
 
 // Key 対応するキーのビット配列
 type Key struct {
-	Top uint
-	ID  uint
+	Top byte
+	ID  byte
 }
 
 // KeyMap runeをKeyにUsageIDを取得する
@@ -63,28 +63,28 @@ var KeyMap = map[rune]Key{
 	'Y': {0x2, 0x1C},
 	'Z': {0x2, 0x1D},
 	//数字
-	'1': {0x0, 0x59},
-	'2': {0x0, 0x5A},
-	'3': {0x0, 0x5B},
-	'4': {0x0, 0x5C},
-	'5': {0x0, 0x5D},
-	'6': {0x0, 0x5E},
-	'7': {0x0, 0x5F},
-	'8': {0x0, 0x60},
-	'9': {0x0, 0x61},
-	'0': {0x0, 0x62},
+	'1': {0x0, 0x1E},
+	'2': {0x0, 0x1F},
+	'3': {0x0, 0x20},
+	'4': {0x0, 0x21},
+	'5': {0x0, 0x22},
+	'6': {0x0, 0x23},
+	'7': {0x0, 0x24},
+	'8': {0x0, 0x25},
+	'9': {0x0, 0x26},
+	'0': {0x0, 0x27},
 	//その他の文字
 	' ':    {0x0, 0x2C},
-	'!':    {0x2, 0x59},
-	0x0022: {0x2, 0x5A}, //"を指定
-	'#':    {0x2, 0x5B},
-	'$':    {0x2, 0x5C},
-	'%':    {0x2, 0x5D},
-	'&':    {0x2, 0x5E},
-	0x0027: {0x2, 0x5F}, //'を指定
-	'(':    {0x2, 0x60},
-	')':    {0x2, 0x61},
-	'-':    {0x0, 0x2D},
+	'!':    {0x2, 0x1E},
+	0x0022: {0x2, 0x1F}, //"を指定
+	'#':    {0x2, 0x20},
+	'$':    {0x2, 0x21},
+	'%':    {0x2, 0x22},
+	'&':    {0x2, 0x23},
+	0x0027: {0x2, 0x24}, //'を指定
+	'(':    {0x2, 0x25},
+	')':    {0x2, 0x26},
+	'-':    {0x0, 0x27},
 	'^':    {0x0, 0x2E},
 	0x005C: {0x0, 0x89}, //\を指定
 	'@':    {0x0, 0x2F},
@@ -150,9 +150,42 @@ var JapaneaseKeyMap = map[rune][]Key{
 	'や': {KeyMap['y'], KeyMap['a']},
 	'ゆ': {KeyMap['y'], KeyMap['u']},
 	'よ': {KeyMap['y'], KeyMap['o']},
+	'ら': {KeyMap['r'], KeyMap['a']},
+	'り': {KeyMap['r'], KeyMap['i']},
+	'る': {KeyMap['r'], KeyMap['u']},
+	'れ': {KeyMap['r'], KeyMap['e']},
+	'ろ': {KeyMap['r'], KeyMap['o']},
 	'わ': {KeyMap['w'], KeyMap['a']},
 	'を': {KeyMap['w'], KeyMap['o']},
 	'ん': {KeyMap['n'], KeyMap['n']},
+	'が': {KeyMap['g'], KeyMap['a']},
+	'ぎ': {KeyMap['g'], KeyMap['i']},
+	'ぐ': {KeyMap['g'], KeyMap['u']},
+	'げ': {KeyMap['g'], KeyMap['e']},
+	'ご': {KeyMap['g'], KeyMap['o']},
+	'ざ': {KeyMap['z'], KeyMap['a']},
+	'じ': {KeyMap['z'], KeyMap['i']},
+	'ず': {KeyMap['z'], KeyMap['u']},
+	'ぜ': {KeyMap['z'], KeyMap['e']},
+	'ぞ': {KeyMap['z'], KeyMap['o']},
+	'だ': {KeyMap['d'], KeyMap['a']},
+	'ぢ': {KeyMap['d'], KeyMap['i']},
+	'づ': {KeyMap['d'], KeyMap['u']},
+	'で': {KeyMap['d'], KeyMap['e']},
+	'ど': {KeyMap['d'], KeyMap['o']},
+	'ば': {KeyMap['b'], KeyMap['a']},
+	'び': {KeyMap['b'], KeyMap['i']},
+	'ぶ': {KeyMap['b'], KeyMap['u']},
+	'べ': {KeyMap['b'], KeyMap['e']},
+	'ぼ': {KeyMap['b'], KeyMap['o']},
+	'ぁ': {KeyMap['l'], KeyMap['a']},
+	'ぃ': {KeyMap['l'], KeyMap['i']},
+	'ぅ': {KeyMap['l'], KeyMap['u']},
+	'ぇ': {KeyMap['l'], KeyMap['e']},
+	'ぉ': {KeyMap['l'], KeyMap['o']},
+	'ゃ': {KeyMap['l'], KeyMap['y'], KeyMap['a']},
+	'ゅ': {KeyMap['l'], KeyMap['y'], KeyMap['i']},
+	'ょ': {KeyMap['l'], KeyMap['y'], KeyMap['u']},
 }
 
 // ActionMap 十字キー移動など特殊な操作をキーマップにしたもの。|でくくる。（例：|down|）

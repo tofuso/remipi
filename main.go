@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
-	"os/exec"
 	"unicode/utf8"
 
 	"github.com/tofuso/remipi/scancode"
@@ -54,16 +54,21 @@ func main() {
 
 //キーボードに書き込む（開放も行われる）
 func writekey(key scancode.Key) error {
-	l := fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", key.Top, key.ID, *dir)
-	_, err := exec.Command("sh", "-c", l).Output()
+	//l := fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", key.Top, key.ID, *dir)
+	//_, err := exec.Command("sh", "-c", l).Output()
 	//fmt.Println(l)
+	//ファイルにバイナリを書き込む
+	var err error
+	err = ioutil.WriteFile(*dir, []byte{key.Top, 0x0, key.ID, 0x0, 0x0, 0x0, 0x0, 0x0}, 0777)
 	if err != nil {
 		return err
 	}
 	//開放
-	l = fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", scancode.Open.Top, scancode.Open.ID, *dir)
-	_, err = exec.Command("sh", "-c", l).Output()
+	//l = fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", scancode.Open.Top, scancode.Open.ID, *dir)
+	//_, err = exec.Command("sh", "-c", l).Output()
 	//fmt.Println(l)
+	//ファイルにバイナリを書き込む
+	err = ioutil.WriteFile(*dir, []byte{scancode.Open.Top, 0x0, scancode.Open.ID, 0x0, 0x0, 0x0, 0x0, 0x0}, 0777)
 	return err
 }
 
