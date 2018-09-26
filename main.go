@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 	"unicode/utf8"
 
 	"github.com/tofuso/remipi/scancode"
@@ -87,13 +88,9 @@ func run(s string) (bool, error) {
 			if acts == "quit" {
 				//終了する
 				return true, nil
-			}else if acts == "" {
-				//空白であるつまり、||と表記された時は|一個分で表記
-				err := writekey(scancode.KeyMap['|'])
-				if err != nil {
-					return false, err
-				}
-
+			} else if acts == "sec" {
+				//一秒のウェイトを入れる
+				time.Sleep(time.Second)
 			} else if actkey, ok := scancode.ActionMap[acts]; ok {
 				//コマンドあり
 				err := writekey(actkey)
@@ -134,7 +131,7 @@ func run(s string) (bool, error) {
 
 		} else {
 			//該当する文字がない時
-			fmt.Println("該当する文字がありません: ", string(r))
+			fmt.Println("該当する文字がありません: ", r)
 		}
 	}
 	return false, nil
