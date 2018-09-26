@@ -68,14 +68,20 @@ func process(s string) (bool, error) {
 	actf := false   //コマンド中か判定するフラグ
 	var acts string //コマンドの内容を保存する
 	for _, r := range s {
-		if r == '|' && !actf {
+		if r == '^' && !actf {
 			//コマンド開始
 			actf = true //フラグを立てる
 			acts = ""   //初期化
-		} else if r == '|' && actf {
+		} else if r == '^' && actf {
 			//コマンド終了
 			actf = false          //フラグを折る
-			return doaction(acts) //アクションを発生させる
+			f, err := doaction(acts) //アクションを発生させる
+			if err != nil{
+				return false, err
+			}else if f{
+				//終了フラグが発生した時
+				return true, nil
+			}
 		} else if actf {
 			//コマンド取得中
 			acts += string(r)
