@@ -26,21 +26,23 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	if !*talk {
-		//一回だけ実行
-		fmt.Println("入力された文字: ", *textMessage)
-		_, err := run(*textMessage)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+	//一回だけ実行
+	fmt.Println("入力された文字: ", *textMessage)
+	f, err := process(*textMessage)
+	if err != nil {
+		fmt.Println(err)
+		return
+	} else if f {
+		//終了フラグが立った時
+		return
+	}
 
-	} else {
+	if *talk {
 		//対話モード
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			if s := scanner.Text(); utf8.RuneCountInString(s) > 0 {
-				f, err := run(s)
+				f, err := process(s)
 				if err != nil {
 					fmt.Println(err)
 					return
@@ -55,9 +57,6 @@ func main() {
 
 //キーボードに書き込む（開放も行われる）
 func writekey(key scancode.Key) error {
-	//l := fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", key.Top, key.ID, *dir)
-	//_, err := exec.Command("sh", "-c", l).Output()
-	//fmt.Println(l)
 	//ファイルにバイナリを書き込む
 	var err error
 	err = ioutil.WriteFile(*dir, []byte{key.Top, 0x0, key.ID, 0x0, 0x0, 0x0, 0x0, 0x0}, 0777)
@@ -65,16 +64,13 @@ func writekey(key scancode.Key) error {
 		return err
 	}
 	//開放
-	//l = fmt.Sprintf("sudo echo -ne \"\\x%X\\0\\x%X\\0\\0\\0\\0\\0\" > %s", scancode.Open.Top, scancode.Open.ID, *dir)
-	//_, err = exec.Command("sh", "-c", l).Output()
-	//fmt.Println(l)
 	//ファイルにバイナリを書き込む
 	err = ioutil.WriteFile(*dir, []byte{scancode.Open.Top, 0x0, scancode.Open.ID, 0x0, 0x0, 0x0, 0x0, 0x0}, 0777)
 	return err
 }
 
 //解析し、キーに打ち込む処理を行う
-func run(s string) (bool, error) {
+func process(s string) (bool, error) {
 	actf := false   //コマンド中か判定するフラグ
 	var acts string //コマンドの内容を保存する
 	for _, r := range s {
@@ -84,23 +80,8 @@ func run(s string) (bool, error) {
 			acts = ""   //初期化
 		} else if r == '|' && actf {
 			//コマンド終了
-			actf = false //フラグを折る
-			if acts == "quit" {
-				//終了する
-				return true, nil
-			} else if acts == "sec" {
-				//一秒のウェイトを入れる
-				time.Sleep(time.Second)
-			} else if actkey, ok := scancode.ActionMap[acts]; ok {
-				//コマンドあり
-				err := writekey(actkey)
-				if err != nil {
-					return false, err
-				}
-			} else {
-				//該当コマンドなし
-				fmt.Println("該当するコマンドがありませんでした。: ", acts)
-			}
+			actf = false          //フラグを折る
+			return doaction(acts) //アクションを発生させる
 		} else if actf {
 			//コマンド取得中
 			acts += string(r)
@@ -132,6 +113,31 @@ func run(s string) (bool, error) {
 		} else {
 			//該当する文字がない時
 			fmt.Println("該当する文字がありません: ", r)
+		}
+	}
+	return false, nil
+}
+
+// actsから対応するアクションを引き出す。
+func doaction(acts string) (bool, error) {
+	switch acts {
+	case "quit":
+		//終了する
+		return true, nil
+	case "sec":
+		//一秒のウェイトを入れる
+		time.Sleep(time.Second)
+	default:
+		//それら以外
+		if actkey, ok := scancode.ActionMap[acts]; ok {
+			//コマンドあり
+			err := writekey(actkey)
+			if err != nil {
+				return false, err
+			}
+		} else {
+			//該当コマンドなし
+			fmt.Println("該当するコマンドがありませんでした。: ", acts)
 		}
 	}
 	return false, nil
