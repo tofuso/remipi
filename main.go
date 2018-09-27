@@ -143,6 +143,7 @@ func doaction(acts string) (bool, error) {
 			if err != nil {
 				return false, err
 			}
+			time.Sleep(time.Second/10)	//操作を受け付てから実行までのウェイトをもたせる
 		} else {
 			//該当コマンドなし
 			fmt.Println("該当するコマンドがありませんでした。: ", acts)
