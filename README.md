@@ -38,7 +38,7 @@ remipi -t
 
 ```
 _win-r_			//windowsキー+Rキー  
-_win-r__sec_notepad__sec_enter_	//メモ帳の起動
+_win-r_notepad_enter_	//メモ帳の起動
 ```
 
 #### 特殊操作一覧

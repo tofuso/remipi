@@ -15,7 +15,7 @@ import (
 var (
 	textMessage = flag.String("s", "Hello World!", "キーボードに出力させる文字を指定してください。")
 	dir         = flag.String("d", "/dev/hidg0", "デバイスファイル")
-	talk        = flag.Bool("t", false, "指定すると対話モードで起動します。Ctr+Cで終了。")
+	talk        = flag.Bool("t", false, "指定すると対話モードで起動します。Ctr+Cまたは_quit_を実行して終了。")
 )
 
 func main() {
