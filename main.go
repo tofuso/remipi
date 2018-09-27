@@ -68,11 +68,11 @@ func process(s string) (bool, error) {
 	actf := false   //コマンド中か判定するフラグ
 	var acts string //コマンドの内容を保存する
 	for _, r := range s {
-		if r == '!' && !actf {
+		if r == '_' && !actf {
 			//コマンド開始
 			actf = true //フラグを立てる
 			acts = ""   //初期化
-		} else if r == '!' && actf {
+		} else if r == '_' && actf {
 			//コマンド終了
 			actf = false          //フラグを折る
 			f, err := doaction(acts) //アクションを発生させる
@@ -127,12 +127,14 @@ func doaction(acts string) (bool, error) {
 	case "sec":
 		//一秒のウェイトを入れる
 		time.Sleep(time.Second)
-	case "":
-		//!!と入力したので!を返す
-		err := writekey(scancode.KeyMap['!'])
+	/*使用不可 UsageIDが不明
+	case "_":
+		//__と入力したので_を返す
+		err := writekey(scancode.KeyMap['_'])
 		if err != nil{
 			return false, err
 		}
+	*/
 	default:
 		//それら以外
 		if actkey, ok := scancode.ActionMap[acts]; ok {
