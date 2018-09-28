@@ -8,7 +8,15 @@ RaspberryPiを遠隔入力キーボードとして使う際に入力を支援す
 
 ### インストール方法
 
-このページを参照してください。
+[このページ](https://tofu-so.hatenablog.jp/entry/2018/09/28/020705#Raspberry-Pi%E3%81%8B%E3%82%89%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%81%A8%E3%81%97%E3%81%A6%E5%85%A5%E5%8A%9B%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B)を参照して、RaspberryPiをHIDのUSBキーボードにしてください。  
+
+そして
+
+```
+go get github.com/tofuso/remipi
+```
+
+を実行してください。
 
 ### 引数
 
