@@ -47,6 +47,7 @@ remipi -t
 ```
 _win-r_			//windowsキー+Rキー  
 _win-r_notepad_enter_	//メモ帳の起動
+_quit_			//対話モードの終了
 ```
 
 #### 特殊操作一覧
